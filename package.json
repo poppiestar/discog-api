@@ -1,0 +1,19 @@
+{
+  "name": "discog-api",
+  "version": "1.0.0",
+  "description": "The API portion of a Discography application",
+  "main": "index.js",
+  "scripts": {
+    "test": "lab"
+  },
+  "keywords": [
+    "hapi",
+    "lab",
+    "discography"
+  ],
+  "author": "Drew Miller (drew@onpatrol.co)",
+  "license": "MIT",
+  "dependencies": {
+    "hapi": "^13.4.0"
+  }
+}

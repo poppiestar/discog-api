@@ -15,6 +15,10 @@ before((done) => {
 
     require('../server')((err, srv) => {
 
+        if (err) {
+            throw err;
+        }
+
         server = srv;
         done();
     });

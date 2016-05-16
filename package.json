@@ -4,7 +4,7 @@
   "description": "The API portion of a Discography application",
   "main": "index.js",
   "scripts": {
-    "test": "lab"
+    "test": "lab -c -L"
   },
   "keywords": [
     "hapi",

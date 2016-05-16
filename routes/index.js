@@ -1,7 +1,7 @@
 
 'use strict';
 
-var Routes = require('../handlers');
+const Routes = require('../handlers');
 
 module.exports = [
     {

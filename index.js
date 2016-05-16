@@ -1,20 +1,20 @@
 
 'use strict';
 
-const Hapi = require('hapi');
+const Server = require('./server');
 
-const server = new Hapi.Server();
-
-server.connection({ port: 3000 });
-
-server.route(require('./routes'));
-
-server.start((err) => {
+Server((err, server) => {
 
     if (err) {
         throw err;
     }
+    server.start((err) => {
 
-    console.log(`Server running at: ${server.info.uri}`);
+        if (err) {
+            throw err;
+        }
+
+        console.log(`Server running at: ${server.info.uri}`);
+    });
 });
 

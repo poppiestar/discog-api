@@ -10,6 +10,19 @@ module.exports = function (callback) {
 
     server.route(require('./routes'));
 
-    callback(null, server);
+    server.register({
+        register: require('hapi-mongodb'),
+        options: {
+            url: 'mongodb://localhost:27017/app',
+        }
+    }, function (err) {
+
+        if (err) {
+            throw err;
+        }
+
+        callback(null, server);
+    });
+
 };
 

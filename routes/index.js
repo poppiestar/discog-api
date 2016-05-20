@@ -17,7 +17,12 @@ module.exports = [
     {
         method: 'GET',
         path: '/releases/{slug}',
-        handler: Routes.getSingleRelease
+        handler: Routes.getRelease
+    },
+    {
+        method: 'GET',
+        path: '/releases/{slug}/{version}',
+        handler: Routes.getReleaseVersion
     }
 ];
 

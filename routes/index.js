@@ -15,6 +15,11 @@ module.exports = [
         handler: Routes.getReleases
     },
     {
+        method: 'POST',
+        path: '/releases',
+        handler: Routes.postRelease
+    },
+    {
         method: 'GET',
         path: '/releases/{slug}',
         handler: Routes.getRelease

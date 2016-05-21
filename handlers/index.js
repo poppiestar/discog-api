@@ -1,6 +1,8 @@
 
 'use strict';
 
+const Slug = require('slug');
+
 exports.home = function (request, reply) {
 
     reply({ hello: 'there' });
@@ -8,7 +10,6 @@ exports.home = function (request, reply) {
 
 exports.getReleases = function (request, reply) {
 
-/*
     const db = request.server.plugins['hapi-mongodb'].db;
     const releases = db.collection('releases');
 
@@ -20,7 +21,7 @@ exports.getReleases = function (request, reply) {
 
         reply(result);
     });
-    */
+    /*
     reply([
         {
             name: 'Box Frenzy',
@@ -33,9 +34,11 @@ exports.getReleases = function (request, reply) {
             slug: 'now-for-a-feast'
         }
     ]);
+    */
 };
 
 exports.getRelease = function (request, reply) {
+
     reply({
         name: 'Box Frenzy',
         date: '1987-10-26',
@@ -82,6 +85,25 @@ exports.getRelease = function (request, reply) {
                 format: 'CD'
             }
         ]
+    });
+};
+
+exports.postRelease = function (request, reply) {
+
+    const db = request.server.plugins['hapi-mongodb'].db;
+    const releases = db.collection('releases');
+    const release = request.payload;
+
+    release.slug = Slug(release.name, { lower: true });
+    release.date = new Date(release.date);
+
+    releases.save(release, (err, result) => {
+
+        if (err) {
+            throw err;
+        }
+
+        reply(release);
     });
 };
 

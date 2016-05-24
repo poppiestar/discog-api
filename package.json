@@ -14,12 +14,14 @@
   "author": "Drew Miller (drew@onpatrol.co)",
   "license": "MIT",
   "dependencies": {
+    "boom": "^3.2.0",
     "hapi": "^13.4.0",
     "hapi-mongodb": "^6.0.0",
     "slug": "^0.9.1"
   },
   "devDependencies": {
     "code": "^2.3.0",
-    "lab": "^10.5.1"
+    "lab": "^10.5.1",
+    "sinon": "^1.17.4"
   }
 }

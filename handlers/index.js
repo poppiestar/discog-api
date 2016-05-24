@@ -2,11 +2,7 @@
 'use strict';
 
 const Slug = require('slug');
-
-exports.home = function (request, reply) {
-
-    reply({ hello: 'there' });
-};
+const Boom = require('boom');
 
 exports.getReleases = function (request, reply) {
 
@@ -21,24 +17,29 @@ exports.getReleases = function (request, reply) {
 
         reply(result);
     });
-    /*
-    reply([
-        {
-            name: 'Box Frenzy',
-            date: '1987-10-26',
-            slug: 'box-frenzy'
-        },
-        {
-            name: 'Now For a Feast',
-            date: '1988-12-12',
-            slug: 'now-for-a-feast'
-        }
-    ]);
-    */
 };
 
 exports.getRelease = function (request, reply) {
 
+    const db = request.server.plugins['hapi-mongodb'].db;
+    const releases = db.collection('releases');
+
+    releases.findOne({
+        slug: request.params.slug
+    }, (err, doc) => {
+
+        if (err) {
+            throw err;
+        }
+
+        if (!doc) {
+            return reply(Boom.notFound());
+        }
+
+        return reply(doc);
+    });
+
+    /*
     reply({
         name: 'Box Frenzy',
         date: '1987-10-26',
@@ -86,9 +87,10 @@ exports.getRelease = function (request, reply) {
             }
         ]
     });
+    */
 };
 
-exports.postRelease = function (request, reply) {
+exports.createRelease = function (request, reply) {
 
     const db = request.server.plugins['hapi-mongodb'].db;
     const releases = db.collection('releases');
@@ -104,6 +106,54 @@ exports.postRelease = function (request, reply) {
         }
 
         reply(release);
+    });
+};
+
+exports.updateRelease = function (request, reply) {
+
+    const db = request.server.plugins['hapi-mongodb'].db;
+    const releases = db.collection('releases');
+    const release = request.payload;
+
+    release.slug = Slug(release.name, { lower: true });
+    release.date = new Date(release.date);
+
+    releases.update({
+        slug: release.slug
+    }, {
+        $set: release
+    }, (err, result) => {
+
+        if (err) {
+            throw err;
+        }
+
+        if (result.n === 0) {
+            return reply(Boom.notFound());
+        }
+
+        return reply(release);
+    });
+};
+
+exports.deleteRelease = function (request, reply) {
+
+    const db = request.server.plugins['hapi-mongodb'].db;
+    const releases = db.collection('releases');
+
+    releases.remove({
+        slug: request.params.slug
+    }, (err, doc) => {
+
+        if (err) {
+            throw err;
+        }
+
+        if (!doc) {
+            return reply(Boom.notFound());
+        }
+
+        return reply(doc);
     });
 };
 

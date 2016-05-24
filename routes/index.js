@@ -6,23 +6,28 @@ const Routes = require('../handlers');
 module.exports = [
     {
         method: 'GET',
-        path: '/',
-        handler: Routes.home
-    },
-    {
-        method: 'GET',
         path: '/releases',
         handler: Routes.getReleases
     },
     {
         method: 'POST',
         path: '/releases',
-        handler: Routes.postRelease
+        handler: Routes.createRelease
     },
     {
         method: 'GET',
         path: '/releases/{slug}',
         handler: Routes.getRelease
+    },
+    {
+        method: 'PATCH',
+        path: '/releases/{slug}',
+        handler: Routes.updateRelease
+    },
+    {
+        method: 'DELETE',
+        path: '/releases/{slug}',
+        handler: Routes.deleteRelease
     },
     {
         method: 'GET',

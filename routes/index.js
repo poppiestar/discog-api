@@ -32,7 +32,22 @@ module.exports = [
     {
         method: 'GET',
         path: '/releases/{slug}/{version}',
-        handler: Routes.getReleaseVersion
+        handler: Routes.getVersion
+    },
+    {
+        method: 'POST',
+        path: '/releases/{slug}/',
+        handler: Routes.createVersion
+    },
+    {
+        method: 'PATCH',
+        path: '/releases/{slug}/{version}',
+        handler: Routes.updateVersion
+    },
+    {
+        method: 'DELETE',
+        path: '/releases/{slug}/{version}',
+        handler: Routes.deleteVersion
     }
 ];
 

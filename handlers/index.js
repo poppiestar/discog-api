@@ -3,6 +3,7 @@
 
 const Slug = require('slug');
 const Boom = require('boom');
+const _ = require('lodash');
 
 exports.getReleases = function (request, reply) {
 
@@ -38,56 +39,6 @@ exports.getRelease = function (request, reply) {
 
         return reply(doc);
     });
-
-    /*
-    reply({
-        name: 'Box Frenzy',
-        date: '1987-10-26',
-        slug: 'box-frenzy',
-        versions: [
-            {
-                name: 'Box Frenzy',
-                date: '1987-10-26',
-                slug: 'rtd-64',
-                label: 'Rough Trade',
-                code: 'RTD 64',
-                format: 'LP'
-            },
-            {
-                name: 'Box Frenzy',
-                date: '1987-10-26',
-                slug: 'chap-cd-18',
-                label: 'Chapter 22',
-                code: 'CHAP CD 18',
-                format: 'CD'
-            },
-            {
-                name: 'Box Frenzy',
-                date: '1987-10-26',
-                slug: 'rough-us-33c',
-                label: 'Rough Trade',
-                code: 'ROUGH US 33C',
-                format: 'Cassette'
-            },
-            {
-                name: 'Box Frenzy',
-                date: '1987-10-26',
-                slug: 'rough-us-33',
-                label: 'Rough Trade',
-                code: 'ROUGH US 33',
-                format: 'LP'
-            },
-            {
-                name: 'Box Frenzy',
-                date: '1987-10-26',
-                slug: 'rough-us-33cd',
-                label: 'Rough Trade',
-                code: 'ROUGH US 33CD',
-                format: 'CD'
-            }
-        ]
-    });
-    */
 };
 
 exports.createRelease = function (request, reply) {
@@ -157,27 +108,92 @@ exports.deleteRelease = function (request, reply) {
     });
 };
 
-exports.getReleaseVersion = function (request, reply) {
+exports.getVersion = function (request, reply) {
 
-/*
     const db = request.server.plugins['hapi-mongodb'].db;
     const releases = db.collection('releases');
 
-    releases.find({}).toArray((err, result) => {
+	releases.findOne({
+	    slug: request.params.slug,
+        "versions.slug": request.params.version	
+	}, (err, result) => {
 
         if (err) {
             throw err;
         }
 
+        result.version = _.find(result.versions, { slug: request.params.version });
+
         reply(result);
     });
-    */
-    reply({
-        name: 'Box Frenzy',
-        date: '1987-10-26',
-        slug: 'rough-us-33cd',
-        label: 'Rough Trade',
-        code: 'ROUGH US 33CD',
-        format: 'CD'
+};
+
+exports.createVersion = function (request, reply) {
+
+    const db = request.server.plugins['hapi-mongodb'].db;
+    const releases = db.collection('releases');
+    const version = request.payload;
+
+    console.log('create version');
+    version.slug = Slug(version.code, { lower: true });
+    version.date = new Date(version.date);
+    console.log(version);
+
+    releases.update({ slug: request.params.slug },
+        { $addToSet: { versions: version } },
+        (err, result) => {
+
+        if (err) {
+            throw err;
+        }
+
+        reply(version);
     });
 };
+
+exports.updateVersion = function (request, reply) {
+
+    const db = request.server.plugins['hapi-mongodb'].db;
+    const releases = db.collection('releases');
+    const version = request.payload;
+
+    version.slug = Slug(version.code, { lower: true });
+    version.date = new Date(version.date);
+
+    releases.update({
+        slug: request.params.slug,
+        "versions.slug" : request.params.version
+    },
+    {
+        $set: { "versions.$": version } 
+    }, (err, result) => {
+
+        if (err) {
+            throw err;
+        }
+
+        reply(version);
+    });
+};
+
+exports.deleteVersion = function (request, reply) {
+
+    const db = request.server.plugins['hapi-mongodb'].db;
+    const releases = db.collection('releases');
+
+    releases.update({
+        slug: request.params.slug,
+        "versions.slug": request.params.version
+    },
+    {
+        $pull: { versions: { slug: request.params.version } }
+    }, (err, result) => {
+
+        if (err) {
+            throw err;
+        }
+
+        reply(version);
+    });
+};
+

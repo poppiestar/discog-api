@@ -36,7 +36,7 @@ module.exports = [
     },
     {
         method: 'POST',
-        path: '/releases/{slug}/',
+        path: '/releases/{slug}',
         handler: Routes.createVersion
     },
     {

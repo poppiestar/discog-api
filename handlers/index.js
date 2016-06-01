@@ -191,7 +191,7 @@ exports.deleteVersion = function (request, reply) {
             throw err;
         }
 
-        reply(version);
+        reply({ result: 'ok' });
     });
 };
 

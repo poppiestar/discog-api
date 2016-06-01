@@ -134,10 +134,8 @@ exports.createVersion = function (request, reply) {
     const releases = db.collection('releases');
     const version = request.payload;
 
-    console.log('create version');
     version.slug = Slug(version.code, { lower: true });
     version.date = new Date(version.date);
-    console.log(version);
 
     releases.update({ slug: request.params.slug },
         { $addToSet: { versions: version } },

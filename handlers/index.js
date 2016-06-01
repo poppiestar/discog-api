@@ -10,7 +10,7 @@ exports.getReleases = function (request, reply) {
     const db = request.server.plugins['hapi-mongodb'].db;
     const releases = db.collection('releases');
 
-    releases.find({}).toArray((err, result) => {
+    releases.find({}).sort({ date: 1 }).toArray((err, result) => {
 
         if (err) {
             throw err;
